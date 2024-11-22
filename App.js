@@ -1,32 +1,43 @@
-import React from 'react';
-// Import data and WeatherCard here
+import React, { useState, useEffect } from 'react';
 import cities from './data.js';
-import WeatherCard from './components/WeatherCard.js'
-import {useState} from 'react'
-import Location from './components/Location.js'
+import WeatherCard from './components/WeatherCard.js';
+import Location from './components/Location.js';
 import Form from './components/Form.js';
 
-
 function App() {
-    const [location, setLocation] = useState('Paris');
+  const [weatherData, setWeatherData] = useState(null);  // We set initial state to null for better handling
   
-    return (
-      
-      <>
-        <Form location={location} setLocation={setLocation} />
-        <h1 className="title">REACTIVE WEATHER</h1>
-        <h3 className="subtitle">Up to the minute weather news</h3>
-        <div className="app">
-          {/* We sould remove this if we want to target the location mentionned on the use state */}
-          {/*{cities.map((weather) => (
-            <WeatherCard data={weather} />
-          ))}*/}
-
-          <Location data={cities} location={location} setLocation={setLocation} />
-        </div>
-      </>
-    );
+  async function fetchData(location) {
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=f9beb3ffbf2b3391662d64d1f631e279`
+      );
+      const data = await response.json();
+      console.log(data);
+      setWeatherData({
+        location: data.name,
+        temp: Math.floor(data.main.temp),
+        weather: data.weather[0].main,
+      });
+    } catch (error) {
+      console.log('Oh no, an error occurred! ', error);
+    }
   }
 
-export default App;
+  useEffect(() => {
+    fetchData('new jersey');  // Default fetch for Canada
+  }, []);
 
+  return (
+    <>
+      <Form fetchData={fetchData} />
+      <h1 className="title">REACTIVE WEATHER</h1>
+      <h3 className="subtitle">Up-to-the-minute weather news</h3>
+      <div className="app">
+        <Location weatherData={weatherData} setWeatherData={setWeatherData} />
+      </div>
+    </>
+  );
+}
+
+export default App;

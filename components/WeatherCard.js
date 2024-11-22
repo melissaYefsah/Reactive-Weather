@@ -5,28 +5,28 @@ import partlyCloudy from "../assets/PartlyCloudy.svg"
 import cloudy from "../assets/Cloudy.svg"
 
 
-function WeatherCard(props) {
+function WeatherCard({weatherData}) {
   return (
     <div className = "card">
         <div className = "img-container">
         <img id="icon"
       src={
-        props.data.forecast === "Rainy"
+           weatherData.weather === "Rainy"
           ? rainy
-          : props.data.forecast === "Sunny"
+          : weatherData.weather === "Clear"
           ? sunny
-          : props.data.forecast === "Cloudy"
+          : weatherData.weather === "Clouds"
           ? cloudy
-          : props.data.forecast === "Partly cloudy"
+          : weatherData.weather === "Clouds"
           ? partlyCloudy
           : sunny
       }
     />
         </div>
         <div class="card-body">
-            <h3 className="card-title">{props.data.city}</h3>
-            <h5 className="card-text">{props.data.temperature}</h5>
-            <h5 className="card-text">{props.data.forecast}</h5>
+            <h3 className="card-title">{weatherData.location}</h3>
+            <h5 className="card-text">{weatherData.temp} °C</h5>
+            <h5 className="card-text">{weatherData.weather}</h5>
         </div>
     </div>
   );
